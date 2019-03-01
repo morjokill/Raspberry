@@ -12,12 +12,15 @@ public class Main {
     private static boolean isPlaying = false;
 
     public static void main(String[] args) throws InterruptedException {
+        System.out.println("Initializing controller");
         final GpioController controller = GpioFactory.getInstance();
 
+        System.out.println("Initializing input");
         GpioPinDigitalInput input = controller.provisionDigitalInputPin(RaspiPin.GPIO_00,             // PIN NUMBER
                 "Microphone",                   // PIN FRIENDLY NAME (optional)
                 PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
 
+        System.out.println("Initializing output");
         final GpioPinDigitalOutput output = controller.provisionDigitalOutputPin(RaspiPin.GPIO_07,   // PIN NUMBER
                 "Buzzer",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
@@ -25,6 +28,7 @@ public class Main {
         output.setShutdownOptions(true);
         input.setShutdownOptions(true);
 
+        System.out.println("Adding listener for claps");
         input.addListener(new GpioPinListenerDigital() {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
@@ -32,21 +36,28 @@ public class Main {
 
                 output.pulse(1000);
 
-                if (!isPlaying) {
-                    isPlaying = true;
-                    play(output);
-                } else {
+                System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
+                if (isPlaying) {
                     isPlaying = false;
+                    System.out.println("Making flag false");
+                } else {
+                    System.out.println("Making flag true");
+                    isPlaying = true;
+                    System.out.println("Starting to play march");
+                    play(output);
                 }
             }
         });
 
-        while(true) {
+        System.out.println("Added listener for claps. Nursil can clap now");
+
+        while (true) {
             Thread.sleep(500);
         }
     }
 
     private static void beep(int note, int duration, GpioPinDigitalOutput output) throws Exception {
+        System.out.println("Little beep. Note: " + note + " duration: " + duration + " isPlaying: " + isPlaying);
         if (isPlaying) {
             //This is the semiperiod of each note.
             long beepDelay = (long) (1000000 / note);
@@ -65,11 +76,13 @@ public class Main {
             output.setState(PinState.LOW);
             delay(20);
         } else {
+            System.out.println("isPlaying is false. Stop playing");
             throw new Exception("Stop playing");
         }
     }
 
     private static void play(GpioPinDigitalOutput output) {
+        System.out.println("In play method. isPlaying: " + isPlaying);
         while (isPlaying) {
             try {
                 beep(a, 500, output);
@@ -161,6 +174,7 @@ public class Main {
                 beep(c, 125, output);
                 beep(a, 1000, output);
             } catch (Exception e) {
+                System.out.println("Cathed the exception. Nursil clapped again. isPlaying: " + isPlaying);
                 System.out.println("Stopping playing: " + e);
             }
         }
