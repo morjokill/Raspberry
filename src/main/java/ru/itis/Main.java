@@ -11,7 +11,7 @@ import static ru.itis.NoteConstants.*;
 public class Main {
     private static volatile Boolean isPlaying = false;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         System.out.println("Initializing controller");
         final GpioController controller = GpioFactory.getInstance();
 
@@ -54,7 +54,7 @@ public class Main {
         System.out.println("Added listener for claps. Nursil can clap now");
 
         while (true) {
-            Thread.sleep(500);
+            //TODO: sleep 500
         }
     }
 
@@ -85,100 +85,98 @@ public class Main {
 
     private static void play(GpioPinDigitalOutput output) {
         System.out.println("In play method. isPlaying: " + isPlaying);
-        while (isPlaying) {
-            try {
-                beep(a, 500, output);
-                beep(a, 500, output);
-                beep(f, 350, output);
-                beep(cH, 150, output);
+        try {
+            beep(a, 500, output);
+            beep(a, 500, output);
+            beep(f, 350, output);
+            beep(cH, 150, output);
 
-                beep(a, 500, output);
-                beep(f, 350, output);
-                beep(cH, 150, output);
-                beep(a, 1000, output);
-                beep(eH, 500, output);
+            beep(a, 500, output);
+            beep(f, 350, output);
+            beep(cH, 150, output);
+            beep(a, 1000, output);
+            beep(eH, 500, output);
 
-                beep(eH, 500, output);
-                beep(eH, 500, output);
-                beep(fH, 350, output);
-                beep(cH, 150, output);
-                beep(gS, 500, output);
+            beep(eH, 500, output);
+            beep(eH, 500, output);
+            beep(fH, 350, output);
+            beep(cH, 150, output);
+            beep(gS, 500, output);
 
-                beep(f, 350, output);
-                beep(cH, 150, output);
-                beep(a, 1000, output);
-                beep(aH, 500, output);
-                beep(a, 350, output);
+            beep(f, 350, output);
+            beep(cH, 150, output);
+            beep(a, 1000, output);
+            beep(aH, 500, output);
+            beep(a, 350, output);
 
-                beep(a, 150, output);
-                beep(aH, 500, output);
-                beep(gHS, 250, output);
-                beep(gH, 250, output);
-                beep(fHS, 125, output);
+            beep(a, 150, output);
+            beep(aH, 500, output);
+            beep(gHS, 250, output);
+            beep(gH, 250, output);
+            beep(fHS, 125, output);
 
-                beep(fH, 125, output);
-                beep(fHS, 250, output);
+            beep(fH, 125, output);
+            beep(fHS, 250, output);
 
-                delay(250);
+            delay(250);
 
-                beep(aS, 250, output);
-                beep(dHS, 500, output);
-                beep(dH, 250, output);
-                beep(cHS, 250, output);
-                beep(cH, 125, output);
+            beep(aS, 250, output);
+            beep(dHS, 500, output);
+            beep(dH, 250, output);
+            beep(cHS, 250, output);
+            beep(cH, 125, output);
 
-                beep(b, 125, output);
-                beep(cH, 250, output);
+            beep(b, 125, output);
+            beep(cH, 250, output);
 
-                delay(250);
+            delay(250);
 
-                beep(f, 125, output);
-                beep(gS, 500, output);
-                beep(f, 375, output);
-                beep(a, 125, output);
-                beep(cH, 500, output);
+            beep(f, 125, output);
+            beep(gS, 500, output);
+            beep(f, 375, output);
+            beep(a, 125, output);
+            beep(cH, 500, output);
 
-                beep(a, 375, output);
-                beep(cH, 125, output);
-                beep(eH, 1000, output);
-                beep(aH, 500, output);
-                beep(a, 350, output);
+            beep(a, 375, output);
+            beep(cH, 125, output);
+            beep(eH, 1000, output);
+            beep(aH, 500, output);
+            beep(a, 350, output);
 
-                beep(a, 150, output);
-                beep(aH, 500, output);
-                beep(gHS, 250, output);
-                beep(gH, 250, output);
-                beep(fHS, 125, output);
+            beep(a, 150, output);
+            beep(aH, 500, output);
+            beep(gHS, 250, output);
+            beep(gH, 250, output);
+            beep(fHS, 125, output);
 
-                beep(fH, 125, output);
-                beep(fHS, 250, output);
+            beep(fH, 125, output);
+            beep(fHS, 250, output);
 
-                delay(250);
+            delay(250);
 
-                beep(aS, 250, output);
-                beep(dHS, 500, output);
-                beep(dH, 250, output);
-                beep(cHS, 250, output);
-                beep(cH, 125, output);
+            beep(aS, 250, output);
+            beep(dHS, 500, output);
+            beep(dH, 250, output);
+            beep(cHS, 250, output);
+            beep(cH, 125, output);
 
-                beep(b, 125, output);
-                beep(cH, 250, output);
+            beep(b, 125, output);
+            beep(cH, 250, output);
 
-                delay(250);
+            delay(250);
 
-                beep(f, 250, output);
-                beep(gS, 500, output);
-                beep(f, 375, output);
-                beep(cH, 125, output);
-                beep(a, 500, output);
+            beep(f, 250, output);
+            beep(gS, 500, output);
+            beep(f, 375, output);
+            beep(cH, 125, output);
+            beep(a, 500, output);
 
-                beep(f, 375, output);
-                beep(c, 125, output);
-                beep(a, 1000, output);
-            } catch (Exception e) {
-                System.out.println("Caught the exception. Nursil clapped again. isPlaying: " + isPlaying);
-                System.out.println("Stopping playing: " + e);
-            }
+            beep(f, 375, output);
+            beep(c, 125, output);
+            beep(a, 1000, output);
+        } catch (Exception e) {
+            System.out.println("Caught the exception. Nursil clapped again. isPlaying: " + isPlaying);
+            System.out.println("Stopping playing: " + e);
         }
     }
 }
