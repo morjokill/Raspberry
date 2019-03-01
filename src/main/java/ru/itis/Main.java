@@ -9,7 +9,7 @@ import static com.pi4j.wiringpi.Gpio.delayMicroseconds;
 import static ru.itis.NoteConstants.*;
 
 public class Main {
-    private static boolean isPlaying = false;
+    private static volatile Boolean isPlaying = false;
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("Initializing controller");
@@ -31,21 +31,21 @@ public class Main {
         System.out.println("Adding listener for claps");
         input.addListener(new GpioPinListenerDigital() {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                        + event.getState());
-
                 if (event.getState().isHigh()) {
-                    output.pulse(1000);
-
                     System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
-                    if (isPlaying) {
-                        isPlaying = false;
-                        System.out.println("Making flag false");
-                    } else {
-                        System.out.println("Making flag true");
-                        isPlaying = true;
-                        System.out.println("Starting to play march");
-                        play(output);
+                    System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                            + event.getState());
+
+                    synchronized (isPlaying) {
+                        if (isPlaying) {
+                            isPlaying = false;
+                            System.out.println("Making flag false");
+                        } else {
+                            System.out.println("Making flag true");
+                            isPlaying = true;
+                            System.out.println("Starting to play march");
+                            play(output);
+                        }
                     }
                 }
             }
@@ -176,7 +176,7 @@ public class Main {
                 beep(c, 125, output);
                 beep(a, 1000, output);
             } catch (Exception e) {
-                System.out.println("Cathed the exception. Nursil clapped again. isPlaying: " + isPlaying);
+                System.out.println("Caught the exception. Nursil clapped again. isPlaying: " + isPlaying);
                 System.out.println("Stopping playing: " + e);
             }
         }
