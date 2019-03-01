@@ -32,11 +32,11 @@ public class Main {
         input.addListener(new GpioPinListenerDigital() {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
                 if (event.getState().isHigh()) {
-                    System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
-                    System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                            + event.getState());
-
                     synchronized (isPlaying) {
+                        System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
+                        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                                + event.getState());
+
                         if (isPlaying) {
                             isPlaying = false;
                             System.out.println("Making flag false");
@@ -59,8 +59,8 @@ public class Main {
     }
 
     private static void beep(int note, int duration, GpioPinDigitalOutput output) throws Exception {
-        System.out.println("Little beep. Note: " + note + " duration: " + duration + " isPlaying: " + isPlaying);
         synchronized (isPlaying) {
+            System.out.println("Little beep. Note: " + note + " duration: " + duration + " isPlaying: " + isPlaying);
             if (isPlaying) {
                 //This is the semiperiod of each note.
                 long beepDelay = (long) (1000000 / note);
