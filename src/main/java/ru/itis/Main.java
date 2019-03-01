@@ -34,17 +34,19 @@ public class Main {
                 System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
                         + event.getState());
 
-                output.pulse(1000);
+                if (event.getState().isHigh()) {
+                    output.pulse(1000);
 
-                System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
-                if (isPlaying) {
-                    isPlaying = false;
-                    System.out.println("Making flag false");
-                } else {
-                    System.out.println("Making flag true");
-                    isPlaying = true;
-                    System.out.println("Starting to play march");
-                    play(output);
+                    System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
+                    if (isPlaying) {
+                        isPlaying = false;
+                        System.out.println("Making flag false");
+                    } else {
+                        System.out.println("Making flag true");
+                        isPlaying = true;
+                        System.out.println("Starting to play march");
+                        play(output);
+                    }
                 }
             }
         });
