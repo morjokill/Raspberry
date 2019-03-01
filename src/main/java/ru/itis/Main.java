@@ -11,7 +11,7 @@ import static ru.itis.NoteConstants.*;
 public class Main {
     private static boolean isPlaying = false;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         final GpioController controller = GpioFactory.getInstance();
 
         GpioPinDigitalInput input = controller.provisionDigitalInputPin(RaspiPin.GPIO_00,             // PIN NUMBER
@@ -21,6 +21,9 @@ public class Main {
         final GpioPinDigitalOutput output = controller.provisionDigitalOutputPin(RaspiPin.GPIO_07,   // PIN NUMBER
                 "Buzzer",           // PIN FRIENDLY NAME (optional)
                 PinState.LOW);      // PIN STARTUP STATE (optional)
+
+        output.setShutdownOptions(true);
+        input.setShutdownOptions(true);
 
         input.addListener(new GpioPinListenerDigital() {
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
@@ -38,8 +41,9 @@ public class Main {
             }
         });
 
-        output.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
-        input.setShutdownOptions(true, PinState.LOW, PinPullResistance.OFF);
+        while(true) {
+            Thread.sleep(500);
+        }
     }
 
     private static void beep(int note, int duration, GpioPinDigitalOutput output) throws Exception {
