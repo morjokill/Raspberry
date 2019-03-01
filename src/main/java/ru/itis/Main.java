@@ -11,7 +11,7 @@ import static ru.itis.NoteConstants.*;
 public class Main {
     private static volatile Boolean isPlaying = false;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         System.out.println("Initializing controller");
         final GpioController controller = GpioFactory.getInstance();
 
@@ -54,7 +54,7 @@ public class Main {
         System.out.println("Added listener for claps. Nursil can clap now");
 
         while (true) {
-            //TODO: sleep 500
+            Thread.sleep(10000);
         }
     }
 
