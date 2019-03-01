@@ -60,26 +60,28 @@ public class Main {
 
     private static void beep(int note, int duration, GpioPinDigitalOutput output) throws Exception {
         System.out.println("Little beep. Note: " + note + " duration: " + duration + " isPlaying: " + isPlaying);
-        if (isPlaying) {
-            //This is the semiperiod of each note.
-            long beepDelay = (long) (1000000 / note);
-            //This is how much time we need to spend on the note.
-            long time = (duration * 1000) / (beepDelay * 2);
-            for (int i = 0; i < time; i++) {
-                //1st semiperiod
-                output.setState(PinState.HIGH);
-                delayMicroseconds(beepDelay);
-                //2nd semiperiod
-                output.setState(PinState.LOW);
-                delayMicroseconds(beepDelay);
-            }
+        synchronized (isPlaying) {
+            if (isPlaying) {
+                //This is the semiperiod of each note.
+                long beepDelay = (long) (1000000 / note);
+                //This is how much time we need to spend on the note.
+                long time = (duration * 1000) / (beepDelay * 2);
+                for (int i = 0; i < time; i++) {
+                    //1st semiperiod
+                    output.setState(PinState.HIGH);
+                    delayMicroseconds(beepDelay);
+                    //2nd semiperiod
+                    output.setState(PinState.LOW);
+                    delayMicroseconds(beepDelay);
+                }
 
-            //Add a little delay to separate the single notes
-            output.setState(PinState.LOW);
-            delay(20);
-        } else {
-            System.out.println("isPlaying is false. Stop playing");
-            throw new Exception("Stop playing");
+                //Add a little delay to separate the single notes
+                output.setState(PinState.LOW);
+                delay(20);
+            } else {
+                System.out.println("isPlaying is false. Stop playing");
+                throw new Exception("Stop playing");
+            }
         }
     }
 
