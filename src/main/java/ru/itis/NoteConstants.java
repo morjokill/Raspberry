@@ -1,5 +1,8 @@
 package ru.itis;
 
+/**
+ * Class for constant values of notes
+ */
 public class NoteConstants {
     public static final int cL = 129;
     public static final int cLS = 139;

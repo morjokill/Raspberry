@@ -8,57 +8,113 @@ import static com.pi4j.wiringpi.Gpio.delay;
 import static com.pi4j.wiringpi.Gpio.delayMicroseconds;
 import static ru.itis.NoteConstants.*;
 
+/**
+ * Main class for raspberry input output
+ * Playing imperial march on input signal
+ */
 public class Main {
     private static volatile Boolean isPlaying = false;
+    private static GpioController controller;
+    private static GpioPinDigitalInput input;
+    private static GpioPinDigitalOutput output;
 
-    public static void main(String[] args) throws InterruptedException {
-        System.out.println("Initializing controller");
-        final GpioController controller = GpioFactory.getInstance();
+    /**
+     * Start method
+     * @param args Input arguments from console
+     */
+    public static void main(String[] args) {
+        initGpio();
 
-        System.out.println("Initializing input");
-        GpioPinDigitalInput input = controller.provisionDigitalInputPin(RaspiPin.GPIO_00,             // PIN NUMBER
-                "Microphone",                   // PIN FRIENDLY NAME (optional)
-                PinPullResistance.PULL_DOWN); // PIN RESISTANCE (optional)
+        addInputListener();
 
-        System.out.println("Initializing output");
-        final GpioPinDigitalOutput output = controller.provisionDigitalOutputPin(RaspiPin.GPIO_07,   // PIN NUMBER
-                "Buzzer",           // PIN FRIENDLY NAME (optional)
-                PinState.LOW);      // PIN STARTUP STATE (optional)
-
-        output.setShutdownOptions(true);
-        input.setShutdownOptions(true);
-
-        System.out.println("Adding listener for claps");
-        input.addListener(new GpioPinListenerDigital() {
-            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
-                if (event.getState().isHigh()) {
-                    synchronized (isPlaying) {
-                        System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
-                        System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
-                                + event.getState());
-
-                        if (isPlaying) {
-                            isPlaying = false;
-                            System.out.println("Making flag false");
-                        } else {
-                            System.out.println("Making flag true");
-                            isPlaying = true;
-                            System.out.println("Starting to play march");
-                            play(output);
-                        }
-                    }
-                }
+        try {
+            while (true) {
+                Thread.sleep(10000);
             }
-        });
-
-        System.out.println("Added listener for claps. Nursil can clap now");
-
-        while (true) {
-            Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+            System.out.println("Main thread interrupted: " + ie + " Exiting the program");
+            System.exit(0);
         }
     }
 
-    private static void beep(int note, int duration, GpioPinDigitalOutput output) throws Exception {
+    /**
+     * Add input listener for microphone. Starting play method on signal
+     */
+    private static void addInputListener() {
+        System.out.println("Adding listener for claps");
+        input.addListener(new GpioPinListenerDigital() {
+            public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
+                try {
+                    if (event.getState().isHigh()) {
+                        synchronized (isPlaying) {
+                            System.out.println("Nursil clapped. Flag isPlaying is: " + isPlaying);
+                            System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
+                                    + event.getState());
+
+                            if (isPlaying) {
+                                isPlaying = false;
+                                System.out.println("Making flag false");
+                            } else {
+                                System.out.println("Making flag true");
+                                isPlaying = true;
+                                System.out.println("Starting to play march");
+                                play();
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    System.out.println("Input is broken: " + e + " Will try again until it works");
+                }
+            }
+        });
+        System.out.println("Added listener for claps. Nursil can clap now");
+    }
+
+    /**
+     * Initialization of controller and input output
+     * Setting shutdown options
+     */
+    private static void initGpio() {
+        System.out.println("Initializing controller");
+        controller = GpioFactory.getInstance();
+
+        System.out.println("Initializing input");
+        createInput(RaspiPin.GPIO_00, "Microphone");
+
+        System.out.println("Initializing output");
+        createOutput(RaspiPin.GPIO_07, "Buzzer");
+
+        System.out.println("Setting shutdown options");
+        output.setShutdownOptions(true);
+        input.setShutdownOptions(true);
+    }
+
+    /**
+     * Create input realization for controller
+     * @param pinNumber pin number
+     * @param name input realization name
+     */
+    private static void createInput(Pin pinNumber, String name) {
+        input = controller.provisionDigitalInputPin(pinNumber, name, PinPullResistance.PULL_DOWN);
+    }
+
+    /**
+     * Create output realization for controller
+     * @param pinNumber pin number
+     * @param name output realization name
+     */
+    private static void createOutput(Pin pinNumber, String name) {
+        output = controller.provisionDigitalOutputPin(pinNumber, name, PinState.LOW);
+    }
+
+    /**
+     * Send signal with a certain duration to output
+     * @param note note value
+     * @param duration duration of each note
+     * @throws Exception Could throw StopPlayingException when need to interrupt play() method
+     * Could throw general Exception when output is broken
+     */
+    private static void beep(int note, int duration) throws Exception {
         synchronized (isPlaying) {
             System.out.println("Little beep. Note: " + note + " duration: " + duration + " isPlaying: " + isPlaying);
             if (isPlaying) {
@@ -80,105 +136,110 @@ public class Main {
                 delay(20);
             } else {
                 System.out.println("isPlaying is false. Stop playing");
-                throw new Exception("Stop playing");
+                throw new StopPlayingException("Stop playing");
             }
         }
     }
 
-    private static void play(GpioPinDigitalOutput output) {
+    /**
+     * Play imperial march
+     */
+    private static void play() {
         System.out.println("In play method. isPlaying: " + isPlaying);
         try {
-            beep(a, 500, output);
-            beep(a, 500, output);
-            beep(f, 350, output);
-            beep(cH, 150, output);
+            beep(a, 500);
+            beep(a, 500);
+            beep(f, 350);
+            beep(cH, 150);
 
-            beep(a, 500, output);
-            beep(f, 350, output);
-            beep(cH, 150, output);
-            beep(a, 1000, output);
-            beep(eH, 500, output);
+            beep(a, 500);
+            beep(f, 350);
+            beep(cH, 150);
+            beep(a, 1000);
+            beep(eH, 500);
 
-            beep(eH, 500, output);
-            beep(eH, 500, output);
-            beep(fH, 350, output);
-            beep(cH, 150, output);
-            beep(gS, 500, output);
+            beep(eH, 500);
+            beep(eH, 500);
+            beep(fH, 350);
+            beep(cH, 150);
+            beep(gS, 500);
 
-            beep(f, 350, output);
-            beep(cH, 150, output);
-            beep(a, 1000, output);
-            beep(aH, 500, output);
-            beep(a, 350, output);
+            beep(f, 350);
+            beep(cH, 150);
+            beep(a, 1000);
+            beep(aH, 500);
+            beep(a, 350);
 
-            beep(a, 150, output);
-            beep(aH, 500, output);
-            beep(gHS, 250, output);
-            beep(gH, 250, output);
-            beep(fHS, 125, output);
+            beep(a, 150);
+            beep(aH, 500);
+            beep(gHS, 250);
+            beep(gH, 250);
+            beep(fHS, 125);
 
-            beep(fH, 125, output);
-            beep(fHS, 250, output);
-
-            delay(250);
-
-            beep(aS, 250, output);
-            beep(dHS, 500, output);
-            beep(dH, 250, output);
-            beep(cHS, 250, output);
-            beep(cH, 125, output);
-
-            beep(b, 125, output);
-            beep(cH, 250, output);
+            beep(fH, 125);
+            beep(fHS, 250);
 
             delay(250);
 
-            beep(f, 125, output);
-            beep(gS, 500, output);
-            beep(f, 375, output);
-            beep(a, 125, output);
-            beep(cH, 500, output);
+            beep(aS, 250);
+            beep(dHS, 500);
+            beep(dH, 250);
+            beep(cHS, 250);
+            beep(cH, 125);
 
-            beep(a, 375, output);
-            beep(cH, 125, output);
-            beep(eH, 1000, output);
-            beep(aH, 500, output);
-            beep(a, 350, output);
-
-            beep(a, 150, output);
-            beep(aH, 500, output);
-            beep(gHS, 250, output);
-            beep(gH, 250, output);
-            beep(fHS, 125, output);
-
-            beep(fH, 125, output);
-            beep(fHS, 250, output);
+            beep(b, 125);
+            beep(cH, 250);
 
             delay(250);
 
-            beep(aS, 250, output);
-            beep(dHS, 500, output);
-            beep(dH, 250, output);
-            beep(cHS, 250, output);
-            beep(cH, 125, output);
+            beep(f, 125);
+            beep(gS, 500);
+            beep(f, 375);
+            beep(a, 125);
+            beep(cH, 500);
 
-            beep(b, 125, output);
-            beep(cH, 250, output);
+            beep(a, 375);
+            beep(cH, 125);
+            beep(eH, 1000);
+            beep(aH, 500);
+            beep(a, 350);
+
+            beep(a, 150);
+            beep(aH, 500);
+            beep(gHS, 250);
+            beep(gH, 250);
+            beep(fHS, 125);
+
+            beep(fH, 125);
+            beep(fHS, 250);
 
             delay(250);
 
-            beep(f, 250, output);
-            beep(gS, 500, output);
-            beep(f, 375, output);
-            beep(cH, 125, output);
-            beep(a, 500, output);
+            beep(aS, 250);
+            beep(dHS, 500);
+            beep(dH, 250);
+            beep(cHS, 250);
+            beep(cH, 125);
 
-            beep(f, 375, output);
-            beep(c, 125, output);
-            beep(a, 1000, output);
-        } catch (Exception e) {
+            beep(b, 125);
+            beep(cH, 250);
+
+            delay(250);
+
+            beep(f, 250);
+            beep(gS, 500);
+            beep(f, 375);
+            beep(cH, 125);
+            beep(a, 500);
+
+            beep(f, 375);
+            beep(c, 125);
+            beep(a, 1000);
+        } catch (StopPlayingException spe) {
             System.out.println("Caught the exception. Nursil clapped again. isPlaying: " + isPlaying);
-            System.out.println("Stopping playing: " + e);
+            System.out.println("Stopping playing: " + spe);
+        } catch (Exception e) {
+            System.out.println("Caught the exception: " + e);
         }
     }
 }
