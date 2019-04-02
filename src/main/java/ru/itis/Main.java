@@ -13,10 +13,10 @@ import static ru.itis.NoteConstants.*;
  * Playing imperial march on input signal
  */
 public class Main {
-    private static volatile Boolean isPlaying = false;
+    public static volatile Boolean isPlaying = false;
     private static GpioController controller;
     private static GpioPinDigitalInput input;
-    private static GpioPinDigitalOutput output;
+    public static GpioPinDigitalOutput output;
 
     /**
      * Start method
@@ -26,6 +26,9 @@ public class Main {
         initGpio();
 
         addInputListener();
+
+        Thread play = new Thread(new MarchPlayer());
+        play.start();
 
         try {
             while (true) {
@@ -51,15 +54,7 @@ public class Main {
                             System.out.println(" --> GPIO PIN STATE CHANGE: " + event.getPin() + " = "
                                     + event.getState());
 
-                            if (isPlaying) {
-                                isPlaying = false;
-                                System.out.println("Making flag false");
-                            } else {
-                                System.out.println("Making flag true");
-                                isPlaying = true;
-                                System.out.println("Starting to play march");
-                                play();
-                            }
+                            isPlaying = !isPlaying;
                         }
                     }
                 } catch (Exception e) {
