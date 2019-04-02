@@ -1,4 +1,4 @@
-package ru.itis;
+package ru.itis.exception;
 
 /**
  * Throw this exception when you need to interrupt play() method
