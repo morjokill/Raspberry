@@ -38,6 +38,7 @@ public class SimpleMqttClient {
         client.subscribe(topic, (topic, msg) -> {
             System.out.println("Message came: " + msg);
             Main.isPlaying = !Main.isPlaying;
+            System.out.println("Is song playing now:" + Main.isPlaying);
         });
     }
 }

@@ -29,6 +29,8 @@ public class Main {
 
         songDao = new SongDaoImpl();
 
+        songPlayer.setCurrentSong(1);
+
         songPlayer = new SongPlayer(songDao);
         Thread play = new Thread(songPlayer);
         play.start();
