@@ -25,7 +25,7 @@ public class Main {
      * @param args Input arguments from console
      */
     public static void main(String[] args) throws Exception {
-//        initGpio();
+        initGpio();
 
         songDao = new SongDaoImpl();
 
@@ -36,9 +36,9 @@ public class Main {
         Thread play = new Thread(songPlayer);
         play.start();
 
-//        new SimpleMqttClient("tcp://localhost:1883", "TOPIC");
+        new SimpleMqttClient("tcp://localhost:1883", "TOPIC");
 
-//        Application.start(PORT);
+        Application.start(PORT);
 
         while (true) {
         }
