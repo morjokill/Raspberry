@@ -2,6 +2,7 @@ package ru.itis.controller;
 
 import ru.itis.Main;
 import ru.itis.dao.SongDao;
+import ru.itis.model.Song;
 import ru.itis.model.web.SongsResponse;
 
 import javax.ws.rs.GET;
@@ -28,7 +29,14 @@ public class SongController {
     @GET
     @Path("/songs")
     public Response getSongs() {
-        return Response.status(200).entity(new SongsResponse(Main.songPlayer.getCurrentSong().getId(), songDao.getSongs())).build();
+        int currentSongId;
+        Song currentSong = Main.songPlayer.getCurrentSong();
+        if (null != currentSong) {
+            currentSongId = currentSong.getId();
+        } else {
+            currentSongId = 0;
+        }
+        return Response.status(200).entity(new SongsResponse(currentSongId, songDao.getSongs())).build();
     }
 
     @POST

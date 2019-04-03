@@ -23,14 +23,16 @@ public class SongPlayer implements Runnable {
     public void run() {
         while (true) {
             Song localSong = getCurrentSong();
-            for (Sound sound : localSong.getSounds()) {
-                if (localSong.equals(getCurrentSong())) {
-                    while (!Main.isPlaying) {
-                        //wait for play
+            if (null != currentSong) {
+                for (Sound sound : localSong.getSounds()) {
+                    if (localSong.equals(getCurrentSong())) {
+                        while (!Main.isPlaying) {
+                            //wait for play
+                        }
+                        playSound(sound);
+                    } else {
+                        break;
                     }
-                    playSound(sound);
-                } else {
-                    break;
                 }
             }
         }
@@ -72,6 +74,9 @@ public class SongPlayer implements Runnable {
     }
 
     public void setCurrentSong(int songId) {
-        setCurrentSong(songDao.getSongById(songId));
+        Song songFromDb = songDao.getSongById(songId);
+        if (null != songFromDb) {
+            setCurrentSong(songFromDb);
+        }
     }
 }
