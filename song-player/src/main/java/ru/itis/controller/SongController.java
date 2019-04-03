@@ -5,10 +5,8 @@ import ru.itis.dao.SongDao;
 import ru.itis.model.Song;
 import ru.itis.model.web.SongsResponse;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/")
@@ -41,6 +39,7 @@ public class SongController {
 
     @POST
     @Path("/songs")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response changeCurrentSong(int currentSongId) {
         Main.songPlayer.setCurrentSong(currentSongId);
         return Response.status(200).entity(currentSongId).build();
