@@ -15,8 +15,8 @@ public class SongDaoImpl implements SongDao {
     private JdbcTemplate jdbcTemplate;
 
     private static final String SQL_GET_ALL_SONGS = "SELECT song.id as song_id, song.name as song_name, note.name as note_name,  " +
-            "            note.duration as note_duration, sound.delay as sound_delay " +
-            "            FROM song INNER JOIN sound on song.id = sound.song_id INNER JOIN note on sound.note = note.name;";
+            "note.duration as note_duration, sound.delay as sound_delay " +
+            "FROM song INNER JOIN sound on song.id = sound.song_id INNER JOIN note on sound.note = note.name;";
 
     public SongDaoImpl() {
         this.jdbcTemplate = new JdbcTemplate(DaoConfig.getDataSource());
@@ -38,7 +38,7 @@ public class SongDaoImpl implements SongDao {
             Song song = songs.get(songId);
             if (null == song) {
                 String songName = (String) row.get("song_name");
-                song = new Song(songId, songName, new LinkedList<Sound>());
+                song = new Song(songId, songName, new LinkedList<>());
                 songs.put(songId, song);
             }
             song.getSounds().add(sound);
@@ -54,11 +54,6 @@ public class SongDaoImpl implements SongDao {
     @Override
     public void deleteSong(int songId) {
 
-    }
-
-    @Override
-    public Song getSongById(int songId) {
-        return null;
     }
 
     public static void main(String[] args) {

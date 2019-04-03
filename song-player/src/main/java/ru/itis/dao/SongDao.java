@@ -10,6 +10,4 @@ public interface SongDao {
     void saveSong(Song song);
 
     void deleteSong(int songId);
-
-    Song getSongById(int songId);
 }

@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 @ToString
@@ -16,6 +16,10 @@ public class Song {
     private int id;
     private String name;
     private List<Sound> sounds;
+
+    public Song() {
+        sounds = new LinkedList<>();
+    }
 
     @Override
     public boolean equals(Object o) {

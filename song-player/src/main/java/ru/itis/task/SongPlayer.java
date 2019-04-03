@@ -7,6 +7,8 @@ import ru.itis.model.Note;
 import ru.itis.model.Song;
 import ru.itis.model.Sound;
 
+import java.util.List;
+
 import static com.pi4j.wiringpi.Gpio.delay;
 import static com.pi4j.wiringpi.Gpio.delayMicroseconds;
 
@@ -79,7 +81,8 @@ public class SongPlayer implements Runnable {
     }
 
     public void setCurrentSong(int songId) {
-        Song songFromDb = songDao.getSongById(songId);
+        List<Song> songsFromDb = songDao.getSongs();
+        Song songFromDb = songsFromDb.get(songId - 1);
         System.out.println("Song from database: " + songFromDb);
         if (null != songFromDb) {
             setCurrentSong(songFromDb);
