@@ -164,9 +164,7 @@ INSERT INTO sound (note, delay, song_id) VALUES ('a', 200, 2);
 INSERT INTO sound (note, delay, song_id) VALUES ('g', 200, 2);
 INSERT INTO sound (note, delay, song_id) VALUES ('c', 200, 2);
 INSERT INTO sound (note, delay, song_id) VALUES ('d', 400, 2);
-INSERT INTO sound (note, delay, song_id) VALUES ('e', 1000, 2);
-
-INSERT INTO sound (note, delay, song_id) VALUES ('DELAY', 200, 2);
+INSERT INTO sound (note, delay, song_id) VALUES ('e', 200, 2);
 
 INSERT INTO sound (note, delay, song_id) VALUES ('f', 200, 2);
 INSERT INTO sound (note, delay, song_id) VALUES ('f', 200, 2);
