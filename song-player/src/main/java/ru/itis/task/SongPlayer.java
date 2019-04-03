@@ -21,11 +21,15 @@ public class SongPlayer implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("Running song player thread");
         while (true) {
             Song localSong = getCurrentSong();
             if (null != currentSong) {
+                System.out.println("Current song: " + currentSong);
                 for (Sound sound : localSong.getSounds()) {
+                    System.out.println("This sound: " + sound);
                     if (localSong.equals(getCurrentSong())) {
+                        System.out.println("Local song: " + localSong);
                         while (!Main.isPlaying) {
                             //wait for play
                         }
@@ -39,6 +43,7 @@ public class SongPlayer implements Runnable {
     }
 
     private void playSound(Sound sound) {
+        System.out.println("Playing sound: " + sound);
         //This is delay note.
         Note note = sound.getNote();
         int soundDelay = sound.getDelay();
