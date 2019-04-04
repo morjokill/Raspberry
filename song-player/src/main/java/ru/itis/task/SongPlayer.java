@@ -25,10 +25,8 @@ public class SongPlayer implements Runnable {
     public void run() {
         System.out.println("Running song player thread");
         while (true) {
-            System.out.println("currentSong: " + currentSong.getName());
             Song localSong = getCurrentSong();
-            System.out.println("localSong: " + localSong.getName());
-            if (localSong != currentSong) {
+            if (localSong == currentSong && localSong != null) {
                 for (Sound sound : localSong.getSounds()) {
                     System.out.println("This sound: " + sound);
                     if (localSong.equals(getCurrentSong())) {
