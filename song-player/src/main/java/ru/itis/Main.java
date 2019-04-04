@@ -31,8 +31,6 @@ public class Main {
 
         songPlayer = new SongPlayer(songDao);
 
-        songPlayer.setCurrentSong(1);
-
         Thread play = new Thread(songPlayer);
         play.start();
 
