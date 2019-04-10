@@ -19,9 +19,6 @@ public class Main {
         }
     }
 
-    /**
-     * Add input listener for microphone. Starting play method on signal
-     */
     private static void addInputListener() {
         System.out.println("Adding listener for claps");
         input.addListener((GpioPinListenerDigital) event -> {
@@ -39,10 +36,6 @@ public class Main {
         System.out.println("Added listener for claps. You can clap now");
     }
 
-    /**
-     * Initialization of controller and input output
-     * Setting shutdown options
-     */
     private static void initGpio() {
         System.out.println("Initializing controller");
         controller = GpioFactory.getInstance();
@@ -54,12 +47,6 @@ public class Main {
         input.setShutdownOptions(true);
     }
 
-    /**
-     * Create input realization for controller
-     *
-     * @param pinNumber pin number
-     * @param name      input realization name
-     */
     private static void createInput(Pin pinNumber, String name) {
         input = controller.provisionDigitalInputPin(pinNumber, name, PinPullResistance.PULL_DOWN);
     }
