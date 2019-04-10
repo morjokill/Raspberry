@@ -44,7 +44,7 @@ public class SongPlayer implements Runnable {
 
     private void playSound(Sound sound) {
         System.out.println("Playing sound: " + sound);
-        //This is delay note.
+
         Note note = sound.getNote();
         int soundDelay = sound.getDelay();
         if (note.getName().equals(DELAY)) {
@@ -52,9 +52,9 @@ public class SongPlayer implements Runnable {
             return;
         }
 
-        //This is the semiperiod of each note.
+        //Semiperiod of each note.
         long beepDelay = (long) (1000000 / note.getDuration());
-        //This is how much time we need to spend on the note.
+        //Time needed to spend on the note.
         long time = (soundDelay * 1000) / (beepDelay * 2);
         for (int i = 0; i < time; i++) {
             //1st semiperiod
@@ -65,7 +65,7 @@ public class SongPlayer implements Runnable {
             delayMicroseconds(beepDelay);
         }
 
-        //Add a little delay to separate the single sounds
+        //Delay to separate the single sounds
         Main.output.setState(PinState.LOW);
         delay(20);
     }

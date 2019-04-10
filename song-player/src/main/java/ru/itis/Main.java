@@ -7,10 +7,6 @@ import ru.itis.dao.SongDao;
 import ru.itis.dao.SongDaoImpl;
 import ru.itis.task.SongPlayer;
 
-/**
- * Main class for raspberry input output
- * Playing imperial march on input signal
- */
 public class Main {
     public static SongPlayer songPlayer;
     public static SongDao songDao;
@@ -19,11 +15,6 @@ public class Main {
     private static GpioController controller;
     public static GpioPinDigitalOutput output;
 
-    /**
-     * Start method
-     *
-     * @param args Input arguments from console
-     */
     public static void main(String[] args) throws Exception {
         initGpio();
 
@@ -42,10 +33,6 @@ public class Main {
         }
     }
 
-    /**
-     * Initialization of controller and input output
-     * Setting shutdown options
-     */
     private static void initGpio() {
         System.out.println("Initializing controller");
         controller = GpioFactory.getInstance();
@@ -57,12 +44,6 @@ public class Main {
         output.setShutdownOptions(true);
     }
 
-    /**
-     * Create output realization for controller
-     *
-     * @param pinNumber pin number
-     * @param name      output realization name
-     */
     private static void createOutput(Pin pinNumber, String name) {
         output = controller.provisionDigitalOutputPin(pinNumber, name, PinState.LOW);
     }
